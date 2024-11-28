@@ -41,7 +41,7 @@ function EmployeManagementPage() {
   };
 
   return (
-    <Box sx={{ display: "flex", backgroundColor: "cyan", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", backgroundColor: "white", minHeight: "850px" }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
         <Typography variant="h4" gutterBottom>
@@ -92,7 +92,7 @@ function EmployeManagementPage() {
                       component={Link} 
                       to={`/hours-worked/${employe.employeId}`}
                     >
-                      View Hours Worked
+                      Work Hours
                     </Button>
                   </TableCell>
                 </TableRow>

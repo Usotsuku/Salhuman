@@ -2,6 +2,7 @@ package com.example.salhuman.security.services;
 
 
 import com.example.salhuman.models.Employe;
+import com.example.salhuman.repositories.EmployeRepository;
 import com.example.salhuman.security.dto.*;
 import com.example.salhuman.security.entities.User;
 import com.example.salhuman.security.repositories.UserRepository;
@@ -31,6 +32,8 @@ public class UserServiceImp {
     private PasswordEncoder passwordEncoder;
     @Autowired
     EmployeService employeService;
+    @Autowired
+    EmployeRepository employeRepository;
 
 
         public ReqRes createUser(String email, String password, String role, String name) {
@@ -45,6 +48,10 @@ public class UserServiceImp {
                 user.setPassword(passwordEncoder.encode(password));
                 User userResult = userRepository.save(user);
                 if (userResult.getId()>0) {
+                    Employe employe = new Employe();
+                    employe.setNom(name);
+                    employeRepository.save(employe);
+                    user.setEmploye(employe);
                     resp.setUser((userResult));
                     resp.setMessage("User Saved Successfully");
                     resp.setStatusCode(200);
@@ -68,6 +75,11 @@ public class UserServiceImp {
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             User userResult = userRepository.save(user);
             if (userResult.getId()>0) {
+                Employe employe = new Employe();
+                employe.setNom(registrationRequest.getName());
+                employeRepository.save(employe);
+                user.setEmploye(employe);
+                userRepository.save(user);
                 resp.setUser((userResult));
                 resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
@@ -93,6 +105,7 @@ public class UserServiceImp {
             response.setStatusCode(200);
             response.setToken(jwt);
             response.setRole(user.getRole());
+            response.setEmployeId(user.getEmploye().getEmployeId());
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMessage("Successfully Logged In");

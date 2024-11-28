@@ -1,60 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress } from '@mui/material';
 import CongeService from '../service/CongeService';
+import Sidebar from '../common/Sidebar';
 
 function CongeListPage() {
-  const [conges, setConges] = useState([]);
+    const [conges, setConges] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchConges();
-  }, []);
+    useEffect(() => {
+        fetchConges();
+    }, []);
 
-  const fetchConges = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await CongeService.getAllEmployeeConges(token);
+    const fetchConges = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await CongeService.getAllEmployeeConges(token);
 
-      if (response && response.congeDataList) {
-        setConges(response.congeDataList);
-      } else {
-        console.error('Invalid response structure:', response);
-      }
-    } catch (error) {
-      console.error('Error fetching Conges:', error);
-    }
-  };
+            if (response && response.congeDataList) {
+                setConges(response.congeDataList);
+            } else {
+                console.error('Invalid response structure:', response);
+            }
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching Conges:', error);
+            setError('Failed to fetch conges');
+            setLoading(false);
+        }
+    };
 
-
-  return (
-    <div className="user-management-container">
-      <h2>Conges</h2>
-      <button className='reg-button'>
-        <Link to="/employe/demander-conge">Demander Conge</Link>
-      </button>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Date Debut</th>
-            <th>Date Fin</th>
-            <th>Statuts</th>
-          </tr>
-        </thead>
-        <tbody>
-          {conges.map(conge => (
-            <tr key={conge.congeId}>
-              <td>{conge.congeId}</td>
-              <td>{conge.type}</td>
-              <td>{conge.dateDebut}</td>
-              <td>{conge.dateFin}</td>
-              <td>{conge.statuts}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    return (
+        <Box sx={{ display: "flex", backgroundColor: "white", minHeight: "900px" }}>
+          <Sidebar />
+            <Box sx={{ width: '100%', p: 3 }}>
+                <Typography variant="h4" gutterBottom>
+                    Conges
+                </Typography>
+                <Button variant="contained" color="primary" sx={{ mb: 2 }}>
+                    <Link to="/demanderConge" style={{ textDecoration: 'none', color: 'white' }}>Demander Conge</Link>
+                </Button>
+                {loading ? (
+                    <CircularProgress />
+                ) : error ? (
+                    <Typography variant="body1" style={{ color: 'red', marginBottom: '1rem' }}>{error}</Typography>
+                ) : (
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Type</TableCell>
+                                    <TableCell>Date Debut</TableCell>
+                                    <TableCell>Date Fin</TableCell>
+                                    <TableCell>Statuts</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {conges.map(conge => (
+                                    <TableRow key={conge.congeId}>
+                                        <TableCell>{conge.congeId}</TableCell>
+                                        <TableCell>{conge.type}</TableCell>
+                                        <TableCell>{conge.dateDebut}</TableCell>
+                                        <TableCell>{conge.dateFin}</TableCell>
+                                        <TableCell>{conge.statuts}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
+            </Box>
+        </Box>
+    );
 }
 
 export default CongeListPage;

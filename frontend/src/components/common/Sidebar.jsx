@@ -16,9 +16,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/logo.jpg'; // Import the logo
 
 const drawerWidth = 240;
 
@@ -87,7 +88,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function Sidebar() {
+const Sidebar = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
@@ -99,6 +100,60 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    // Clear localStorage and navigate to login page
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/');
+  };
+
+  const role = localStorage.getItem('role');
+  const employeId = localStorage.getItem('Id');
+
+  const getMenuItems = () => {
+    switch (role) {
+      case 'ADMIN':
+        return [
+          { label: 'Employees', path: '/admin/employe-management', icon: <InboxIcon /> },
+          { label: 'Users', path: '/admin/user-management', icon: <InboxIcon /> },
+          { label: 'Documents', path: '/fichepaielist', icon: <InboxIcon /> },
+        ];
+      case 'MANAGER':
+        return [
+          { label: 'Employees', path: '/admin/employe-management', icon: <InboxIcon /> },
+          { label: 'Documents', path: '/fichepaielist', icon: <InboxIcon /> },
+          { label: 'Conges', path: '/managerCongeList', icon: <InboxIcon /> },
+        ];
+      case 'USER':
+        return [
+          { label: 'Conges', path: '/CongeList', icon: <InboxIcon /> },
+          { label: 'Work Hours', path: `/hours-worked/${employeId}`, icon: <InboxIcon /> },
+          { label: 'Documents', path: '/employefichepaielist', icon: <InboxIcon /> },
+          { label: 'Submit Work Hours', path: '/add-hours-worked', icon: <InboxIcon /> },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const menuItems = getMenuItems();
+
+  // Dynamic title based on role
+  let title = '';
+  switch (role) {
+    case 'ADMIN':
+      title = 'Admin Dashboard';
+      break;
+    case 'MANAGER':
+      title = 'Manager Dashboard';
+      break;
+    case 'USER':
+      title = 'Employee Dashboard';
+      break;
+    default:
+      title = 'Dashboard';
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -118,8 +173,17 @@ export default function Sidebar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Admin Dashboard
+            {title}
           </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="logout"
+            edge="end"
+            onClick={handleLogout}
+            sx={{ marginLeft: 'auto' }}
+          >
+            <ExitToAppIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -128,9 +192,18 @@ export default function Sidebar() {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: theme.spacing(2) }}>
+          <img src={logo} alt="Logo" style={{ width: '80%', height: 'auto' }} />
+        </Box>
         <Divider />
         <List>
-            <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>(navigate("/admin/user-management"))}>
+          {menuItems.map((item, index) => (
+            <ListItem
+              button
+              key={index}
+              onClick={() => navigate(item.path)}
+              sx={{ display: 'block' }}
+            >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -145,94 +218,16 @@ export default function Sidebar() {
                     justifyContent: 'center',
                   }}
                 >
-                <InboxIcon />
+                  {item.icon}
                 </ListItemIcon>
-                <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={item.label} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>(navigate("/admin/employe-management"))}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Employees" sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>(navigate("/admin/user-management"))}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Documents" sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Reports" sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
+          ))}
         </List>
       </Drawer>
-      
     </Box>
   );
-}
+};
+
+export default Sidebar;

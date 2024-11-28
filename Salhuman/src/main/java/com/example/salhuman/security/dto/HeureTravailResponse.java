@@ -9,9 +9,15 @@ import java.util.Date;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HeureTravailleresreq {
+public class HeureTravailResponse {
+    private Long HeureId;
     private Date date;
-    private String type;
-    private int nb_heures;
-    private String statut;
+    private String startTime;
+    private String endTime;
+    private int regularHours;
+    private int overtimeHours;
+    private int totalHours;
+    private String nom;
+    private String prenom;
+    private Date date_embauche;
 }

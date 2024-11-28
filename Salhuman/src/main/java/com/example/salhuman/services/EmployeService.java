@@ -57,7 +57,6 @@ public class EmployeService {
                 user.setEmploye(employeResult);
                 userRepository.save(user);
 
-                // Update employee with the created user
                 employeResult.setUser(user);
                 employeRepository.save(employeResult);
 

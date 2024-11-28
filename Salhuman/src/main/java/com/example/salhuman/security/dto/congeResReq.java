@@ -1,7 +1,6 @@
 package com.example.salhuman.security.dto;
 
 import com.example.salhuman.models.Conge;
-import com.example.salhuman.models.Employe;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

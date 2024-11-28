@@ -21,6 +21,9 @@ import AdminLayout from './layouts/AdminLayout';
 import UserLayout from './layouts/UserLayout';
 import PrivateRoute from './layouts/PrivateRoute';
 import PayslipPage from './components/Manager/payslip';
+import HoursWorkedPage from './components/Manager/tableHeure';
+import EmployePayrollManagementPage from './components/Manager/EmployePayslipList';
+import PayrollManagementPage from './components/Manager/PayslipList';
 
 function App() {
 
@@ -29,19 +32,49 @@ function App() {
       <BrowserRouter>
         <Routes>
         <Route exact path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegistrationPage />} />
+                
+                
+                
+                {UserService.managerOnly() && (
+              <>
+                <Route path="/admin/add-employee" element={<AddEmployee />} />
+                <Route path="/admin/employe-management" element={<EmployeManagementPage />} />
+                <Route path="/update-employe/:employeId" element={< UpdateEmployee />} />
+                <Route path="/hours-worked/:employeId" element={<HoursWorkedPage />} />
+                <Route path="/employefichepaielist" element={<EmployePayrollManagementPage />}/>
+                <Route path="/fichepaielist" element={<PayrollManagementPage />}/>
+                <Route path="/payroll/:ficheId" element={<PayslipPage />}/>
+                <Route path="/managerCongeList" element={< ManagerCongesPage />} />
+              </>
+            )}
+
+              
+              
+              {UserService.adminOnly() && (
+              <>
+                <Route path="/register" element={<RegistrationPage />} />
                 <Route path="/admin/user-management" element={<UserManagementPage />} />
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
                 <Route path="/admin/add-employee" element={<AddEmployee />} />
                 <Route path="/admin/employe-management" element={<EmployeManagementPage />} />
                 <Route path="/update-employe/:employeId" element={< UpdateEmployee />} />
-                <Route path="/managerCongeList" element={< ManagerCongesPage />} />
-                <Route path="/add-hours-worked" element={<AddHeureTravaillee/>} />
-                <Route path="/hours-worked/:employeId" element= {<HoursWorked/>} />
-                <Route path="/demanderConge" element={< DemanderCongePage />} />
+                <Route path="/hours-worked/:employeId" element={<HoursWorkedPage />} />
+                <Route path="/employefichepaielist" element={<EmployePayrollManagementPage />}/>
+                <Route path="/fichepaielist" element={<PayrollManagementPage />}/>
+                <Route path="/payroll/:ficheId" element={<PayslipPage />}/>
+              </>
+            )}
+              {UserService.userOnly() &&(
+              <>
+              <Route path="/employefichepaielist" element={<EmployePayrollManagementPage />}/>
+              <Route path="/hours-worked/:employeId" element={<HoursWorkedPage />} />
+              <Route path="/add-hours-worked" element={<AddHeureTravaillee/>} />
+              <Route path="/demanderConge" element={< DemanderCongePage />} />
               <Route path="/CongeList" element={< CongeListPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/payslip" element={<PayslipPage />} />
+              <Route path="/payroll/:ficheId" element={<PayslipPage />}/>
+              </>
+            )}
         </Routes>
       </BrowserRouter>
     </>

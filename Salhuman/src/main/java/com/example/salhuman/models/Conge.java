@@ -29,5 +29,4 @@ public class Conge {
     @ManyToOne
     private Employe employe;
 
-
 }

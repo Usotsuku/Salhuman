@@ -2,15 +2,14 @@ package com.example.salhuman.controllers;
 
 import com.example.salhuman.models.Employe;
 import com.example.salhuman.models.Heure_Travaille;
-import com.example.salhuman.security.dto.HeureTravailleDto;
+import com.example.salhuman.security.dto.HeureTravailResponse;
+import com.example.salhuman.security.dto.HeureTravailleresreq;
 import com.example.salhuman.security.entities.User;
 import com.example.salhuman.security.repositories.UserRepository;
-import com.example.salhuman.security.services.UserServiceImp;
 import com.example.salhuman.services.HeureTravailleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -21,6 +20,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class HeureTravailleController {
@@ -28,12 +28,12 @@ public class HeureTravailleController {
     private HeureTravailleService heureTravailleService;
 
     @Autowired
-    private UserRepository userRepository; // Assume this service can fetch the logged-in user details
+    private UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<Heure_Travaille> addHeureTravaillee(@RequestBody HeureTravailleDto heureTravailleDto, Principal principal) {
-        Optional<User> currentUser = userRepository.findByEmail(principal.getName()); // Assume this returns the logged-in user
-        Employe currentEmploye = currentUser.get().getEmploye(); // Assume the user has a reference to their associated employee
+    public ResponseEntity<Heure_Travaille> addHeureTravaillee(@RequestBody HeureTravailleresreq heureTravailleDto, Principal principal) {
+        Optional<User> currentUser = userRepository.findByEmail(principal.getName());
+        Employe currentEmploye = currentUser.get().getEmploye();
 
         Heure_Travaille heureTravaille = new Heure_Travaille();
         heureTravaille.setDate(heureTravailleDto.getDate());
@@ -46,7 +46,19 @@ public class HeureTravailleController {
         return new ResponseEntity<>(savedHeure, HttpStatus.CREATED);
     }
 
-    @GetMapping("employe/workhours/{employeId}")
+
+    @GetMapping("hoursworked/{employeId}/currentMonth")
+    public ResponseEntity<List<HeureTravailResponse>> getCurrentMonthHoursWorkedByEmployee(
+            @PathVariable Long employeId) {
+
+        List<HeureTravailResponse> response = heureTravailleService.getCurrentMonthHoursWorkedByEmployee(employeId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+}
+
+/*
+@GetMapping("employe/workhours/{employeId}")
     public ResponseEntity<List<Heure_Travaille>> getHeuresByEmploye(@PathVariable Long employeId) {
         List<Heure_Travaille> heures = heureTravailleService.getHeuresByEmploye(employeId);
         return new ResponseEntity<>(heures, HttpStatus.OK);
@@ -73,4 +85,4 @@ public class HeureTravailleController {
                 Date.from(lastDayOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         return new ResponseEntity<>(heures, HttpStatus.OK);
     }
-}
+ */

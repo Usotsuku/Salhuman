@@ -11,4 +11,6 @@ public class CongeResponse {
     private Date dateDebut;
     private Date dateFin;
     private String statuts;
+    private String nom;
+    private String prenom;
 }

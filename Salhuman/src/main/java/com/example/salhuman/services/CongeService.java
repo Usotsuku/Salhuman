@@ -117,6 +117,8 @@ public class CongeService {
                             dto.setStatuts(conge.getStatuts());
                             dto.setDateDebut(conge.getDateDebut());
                             dto.setDateFin(conge.getDateFin());
+                            dto.setNom(conge.getEmploye().getNom());
+                            dto.setPrenom(conge.getEmploye().getPrenom());
                             return dto;
                         }).collect(Collectors.toList());
 

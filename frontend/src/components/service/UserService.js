@@ -108,10 +108,18 @@ class UserService{
         return role === 'USER'
     }
 
+    static isManager(){
+        const role = localStorage.getItem('role')
+        return role === 'MANAGER'
+    }
+
     static userOnly(){
         return this.isAuthenticated() && this.isUser();
     }
 
+    static managerOnly(){
+        return this.isAuthenticated() && this.isManager();
+    }
 
     static adminOnly(){
         return this.isAuthenticated() && this.isAdmin();

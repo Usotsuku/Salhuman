@@ -27,8 +27,8 @@ const HeureTravailleeService = {
     });
   },
 
-  getHeuresByEmployeAndMonth: (employeId, token) => {
-    return axios.get(`${BASE_URL}/workhours/${employeId}/month`, {
+  getCurrentMonthHoursWorkedByEmployee: (employeId, token) => {
+    return axios.get(`${BASE_URL}/hoursworked/${employeId}/currentMonth`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
