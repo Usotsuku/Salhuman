@@ -9,9 +9,12 @@ import java.util.Date;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HeureTravailleDto {
+public class HeureTravailResponse {
+    private Long HeureId;
     private Date date;
-    private String type;
-    private int nb_heures;
-    private String statut;
+    private String startTime;
+    private String endTime;
+    private int regularHours;
+    private int overtimeHours;
+    private int totalHours;
 }
